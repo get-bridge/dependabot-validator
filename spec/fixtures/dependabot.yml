@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 1
+
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
+    # Disable version update pull requests for now
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Disable version update pull requests for now
+    open-pull-requests-limit: 0
