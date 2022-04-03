@@ -1,0 +1,7 @@
+name: Dependabot Check
+
+description: forthcoming
+
+runs:
+  using: docker
+  image: Dockerfile
