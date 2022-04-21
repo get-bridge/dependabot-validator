@@ -81,7 +81,7 @@ results = DependabotValidator.scanners.map do |scanner|
   { scanner.to_s => results }
 end
 
-ap results if DEBUG
+ap results
 raise "Dependabot configuration needs updating" unless DependabotValidator.valid?(results)
 
 puts "DependabotValidator.valid? => true"
