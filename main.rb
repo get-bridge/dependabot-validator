@@ -18,26 +18,6 @@ if ARGV.any? # any args left is an error
   raise "Extra args detected! Exiting..."
 end
 
-# class Scanner
-#   def initialize(file:, package_ecosystem:)
-#     @file = file
-#     @package_ecosystem = package_ecosystem.to_s
-#   end
-#
-#   def valid?
-#     dependabot_config = YAML.safe_load(@file.read)
-#     config = dependabot_config.fetch('updates').find do |entry|
-#       entry.fetch('package-ecosystem') == @package_ecosystem
-#     end
-#     !config.nil?
-#   end
-# end
-#
-# File.open('spec/fixtures/dependabot.yml') do |file|
-#   scanner = Scanner.new(file: file, package_ecosystem: :bundler)
-#   puts scanner.valid?
-# end
-
 module DependabotValidator
   def self.scanners
     [
@@ -65,19 +45,6 @@ class GemfileScanner
     },
     'open-pull-requests-limit' => 5
   }.freeze
-
-  # def self.run(directory: '.', dependabot:)
-  #   files = Dir.glob(File.join(directory, '**', FILENAME))
-  #   directories = files.map { |file| File.dirname(file) }
-  #   dependabot_config = YAML.safe_load(dependabot.read)
-  #   bundler_entries = dependabot_config.fetch('updates').select do |entry|
-  #     entry.fetch('package-ecosystem') == 'bundler'
-  #   end
-  #   res = bundler_entries.map do |be|
-  #     be.fetch('directory')
-  #   end
-  #   puts res
-  # end
 
   def self.generate(directory: '.')
     files = Dir.glob(File.join(directory, '**', FILENAME))
