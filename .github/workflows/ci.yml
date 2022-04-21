@@ -12,5 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'dependencies') || github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3.0.1
       - uses: ./
+        with:
+          directory: spec/fixtures/test_app
+          dependabot_config: spec/fixtures/dependabot.yml

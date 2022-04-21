@@ -3,6 +3,21 @@
 require 'yaml'
 require 'awesome_print'
 
+DEBUG = false
+
+puts "args: [#{ARGV.join(', ')}]" if DEBUG
+puts "args: [#{ARGV.join(', ')}]"
+
+PROJECT_PATH = ARGV.shift
+DEPENDABOT_CONFIG_PATH = ARGV.shift
+
+if ARGV.any? # any args left is an error
+  ARGV.each do |arg|
+    warn "Extra arg: #{arg}"
+  end
+  raise "Extra args detected! Exiting..."
+end
+
 # class Scanner
 #   def initialize(file:, package_ecosystem:)
 #     @file = file
@@ -53,7 +68,7 @@ class GemfileScanner
 
   # def self.run(directory: '.', dependabot:)
   #   files = Dir.glob(File.join(directory, '**', FILENAME))
-  #   paths = files.map { |file| File.dirname(file) }
+  #   directories = files.map { |file| File.dirname(file) }
   #   dependabot_config = YAML.safe_load(dependabot.read)
   #   bundler_entries = dependabot_config.fetch('updates').select do |entry|
   #     entry.fetch('package-ecosystem') == 'bundler'
@@ -66,10 +81,10 @@ class GemfileScanner
 
   def self.generate(directory: '.')
     files = Dir.glob(File.join(directory, '**', FILENAME))
-    paths = files.map { |file| File.dirname(file) }
+    directories = files.map { |file| File.dirname(file) }
     # TODO: figure out how to do yaml without anchors/aliases
-    paths.map do |path|
-      { 'directory' => path }.merge(DEFAULT_ENTRY)
+    directories.map do |d|
+      { 'directory' => d }.merge(DEFAULT_ENTRY)
     end
   end
 
@@ -84,20 +99,22 @@ class GemfileScanner
 end
 
 results = DependabotValidator.scanners.map do |scanner|
-  reference_config = scanner.generate(directory: 'spec/fixtures/test_app')
-  existing_config = scanner.parse(dependabot: 'spec/fixtures/dependabot.yml')
+  reference_config = scanner.generate(directory: PROJECT_PATH)
+  ap reference_config if DEBUG
+  existing_config = scanner.parse(dependabot: DEPENDABOT_CONFIG_PATH)
+  ap existing_config if DEBUG
 
-  Hash[scanner.to_s, reference_config.map do |reference|
+  results = reference_config.map do |reference|
     [reference.fetch('directory'), existing_config.any? do |existing|
+      ap existing if DEBUG
       reference.fetch('directory') == existing.fetch('directory')
     end]
-  end]
+  end
+
+  { scanner.to_s => results }
 end
 
-if DependabotValidator.valid?(results)
-  ap results
-  puts "DependabotValidator.valid? => true"
-else
-  ap results
-  raise "Dependabot configuration needs updating"
-end
+ap results if DEBUG
+raise "Dependabot configuration needs updating" unless DependabotValidator.valid?(results)
+
+puts "DependabotValidator.valid? => true"

@@ -2,6 +2,19 @@ name: Dependabot Check
 
 description: forthcoming
 
+inputs:
+  directory:
+    description: 'path to project for scanning'
+    required: false
+    default: '.'
+  dependabot_config:
+    description: 'path to dependabot.yml config'
+    required: false
+    default: '.github/dependabot.yml'
+
 runs:
   using: docker
   image: Dockerfile
+  args:
+    - ${{ inputs.directory }}
+    - ${{ inputs.dependabot_config }}
