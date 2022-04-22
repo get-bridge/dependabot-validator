@@ -24,9 +24,7 @@ validator = DependabotValidator.new(directory: PROJECT_PATH, dependabot: DEPENDA
 results = validator.scan
 
 ap results if DEBUG
-if results.all?(&:valid?)
-  puts "DependabotValidator.valid? => true"
-else
+unless results.all?(&:valid?)
   warn "Add the following yaml to your .github/dependabot.yml configuration file:"
   results.each do |scanner|
     warn scanner.print_missing_configs
