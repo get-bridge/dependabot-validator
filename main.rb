@@ -18,7 +18,9 @@ if ARGV.any? # any args left is an error
   raise "Extra args detected! Exiting..."
 end
 
-module DependabotValidator
+class DependabotValidator
+  attr_reader :directory, :dependabot
+
   def self.scanners
     [
       GemfileScanner
@@ -32,6 +34,29 @@ module DependabotValidator
           res
         end
       end
+    end
+  end
+
+  def initialize(directory:, dependabot:)
+    @directory = directory
+    @dependabot = dependabot
+  end
+
+  def scan
+    DependabotValidator.scanners.map do |scanner|
+      reference_config = scanner.generate(directory: directory)
+      ap reference_config if DEBUG
+      existing_config = scanner.parse(dependabot: dependabot)
+      ap existing_config if DEBUG
+
+      results = reference_config.map do |reference|
+        [reference.fetch('directory'), existing_config.any? do |existing|
+          ap existing if DEBUG
+          reference.fetch('directory') == existing.fetch('directory')
+        end]
+      end
+
+      { scanner.to_s => results }
     end
   end
 end
@@ -50,10 +75,15 @@ class GemfileScanner
     sourcefiles = Dir.glob(File.join(directory, '**', FILENAME)).map do |path|
       GemfileSource.new(path: path)
     end
-    directories = sourcefiles.map { |sourcefile| File.dirname(sourcefile.path) }
     # TODO: figure out how to do yaml without anchors/aliases
-    directories.map do |d|
+    directories(sourcefiles: sourcefiles).map do |d|
       { 'directory' => d }.merge(DEFAULT_ENTRY)
+    end
+  end
+
+  def self.directories(sourcefiles:)
+    sourcefiles.map do |sourcefile|
+      File.dirname(sourcefile.path)
     end
   end
 
@@ -85,21 +115,8 @@ class GemfileScanner
   end
 end
 
-results = DependabotValidator.scanners.map do |scanner|
-  reference_config = scanner.generate(directory: PROJECT_PATH)
-  ap reference_config if DEBUG
-  existing_config = scanner.parse(dependabot: DEPENDABOT_CONFIG_PATH)
-  ap existing_config if DEBUG
-
-  results = reference_config.map do |reference|
-    [reference.fetch('directory'), existing_config.any? do |existing|
-      ap existing if DEBUG
-      reference.fetch('directory') == existing.fetch('directory')
-    end]
-  end
-
-  { scanner.to_s => results }
-end
+validator = DependabotValidator.new(directory: PROJECT_PATH, dependabot: DEPENDABOT_CONFIG_PATH)
+results = validator.scan
 
 ap results
 if DependabotValidator.valid?(results)
