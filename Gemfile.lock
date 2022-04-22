@@ -4,10 +4,10 @@ GEM
     awesome_print (1.9.2)
 
 PLATFORMS
-  ruby
+  x86_64-darwin-20
 
 DEPENDENCIES
   awesome_print
 
 BUNDLED WITH
-   2.1.4
+   2.3.12

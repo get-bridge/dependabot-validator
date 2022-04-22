@@ -1,13 +1,16 @@
 FROM ruby:3.1-alpine
-ENV APP_DIR=/usr/src/app
+ENV GITHUB_WORKSPACE=/usr/src/app
 
-# TODO: remove spec/ from final version
-COPY Gemfile \
-  Gemfile.lock \
-  main.rb \
-  spec/ \
-  /
+WORKDIR $GITHUB_WORKSPACE
+
+COPY Gemfile $GITHUB_WORKSPACE
+COPY Gemfile.lock $GITHUB_WORKSPACE
 
 RUN bundle -j $(nproc)
 
-entrypoint ["/main.rb"]
+COPY main.rb $GITHUB_WORKSPACE
+COPY lib     $GITHUB_WORKSPACE/lib
+# TODO: remove spec/ from final version
+COPY spec    $GITHUB_WORKSPACE/spec
+
+entrypoint ["/usr/src/app/main.rb"]
