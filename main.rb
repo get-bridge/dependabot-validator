@@ -47,8 +47,10 @@ class GemfileScanner
   }.freeze
 
   def self.generate(directory: '.')
-    files = Dir.glob(File.join(directory, '**', FILENAME))
-    directories = files.map { |file| File.dirname(file) }
+    sourcefiles = Dir.glob(File.join(directory, '**', FILENAME)).map do |path|
+      GemfileSource.new(path: path)
+    end
+    directories = sourcefiles.map { |sourcefile| File.dirname(sourcefile.path) }
     # TODO: figure out how to do yaml without anchors/aliases
     directories.map do |d|
       { 'directory' => d }.merge(DEFAULT_ENTRY)
@@ -61,6 +63,24 @@ class GemfileScanner
       dependabot_config.fetch('updates').select do |entry|
         entry.fetch('package-ecosystem') == 'bundler'
       end
+    end
+  end
+
+  class GemfileSource
+    attr_reader :path
+
+    def initialize(path:)
+      @path = path
+    end
+
+    def print_config(directory:)
+      <<~TEMPLATE
+        - package-ecosystem: bundler
+          directory: #{directory}
+          schedule:
+            interval: daily
+          open-pull-request-limit: 5
+      TEMPLATE
     end
   end
 end
@@ -82,6 +102,15 @@ results = DependabotValidator.scanners.map do |scanner|
 end
 
 ap results
-raise "Dependabot configuration needs updating" unless DependabotValidator.valid?(results)
-
-puts "DependabotValidator.valid? => true"
+if DependabotValidator.valid?(results)
+  puts "DependabotValidator.valid? => true"
+else
+  results.map do |scanner|
+    scanner.map do |_, group|
+      group.map do |path, _|
+        ap path
+      end
+    end
+  end
+  raise "Dependabot configuration needs updating"
+end
