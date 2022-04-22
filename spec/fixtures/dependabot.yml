@@ -20,6 +20,12 @@ updates:
     # Disable version update pull requests for now
     open-pull-requests-limit: 0
 
+  - package-ecosystem: bundler
+    directory: spec/fixtures/test_app/lib/some-lib
+    schedule:
+      interval: daily
+    open-pull-request-limit: 5
+
   - package-ecosystem: npm
     directory: /
     schedule:
