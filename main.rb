@@ -4,9 +4,9 @@ require 'yaml'
 require 'awesome_print'
 
 DEBUG = false
+DEBUG_ARGS = DEBUG || true
 
-puts "args: [#{ARGV.join(', ')}]" if DEBUG
-puts "args: [#{ARGV.join(', ')}]"
+puts "\nargs: [#{ARGV.join(', ')}]\n\n" if DEBUG_ARGS
 
 PROJECT_PATH = ARGV.shift
 DEPENDABOT_CONFIG_PATH = ARGV.shift
@@ -28,13 +28,7 @@ class DependabotValidator
   end
 
   def self.valid?(results)
-    results.all? do |scanner|
-      scanner.all? do |_, group|
-        group.all? do |_, res|
-          res
-        end
-      end
-    end
+    results.all?(&:valid?)
   end
 
   def initialize(directory:, dependabot:)
@@ -43,20 +37,82 @@ class DependabotValidator
   end
 
   def scan
-    DependabotValidator.scanners.map do |scanner|
-      reference_config = scanner.generate(directory: directory)
-      ap reference_config if DEBUG
+    self.class.scanners.map do |scanner|
+      generated_config = scanner.generate(directory: directory)
+      ap generated_config if DEBUG
       existing_config = scanner.parse(dependabot: dependabot)
       ap existing_config if DEBUG
 
-      results = reference_config.map do |reference|
-        [reference.fetch('directory'), existing_config.any? do |existing|
-          ap existing if DEBUG
-          reference.fetch('directory') == existing.fetch('directory')
-        end]
-      end
+      config_matcher = ConfigMatcher.new(generated_config: generated_config, existing_config: existing_config)
+      ResultCollection.new(scanner: scanner, results: config_matcher.generate!)
+    end
+  end
 
-      { scanner.to_s => results }
+  class ResultCollection
+    def initialize(scanner:, results:)
+      @scanner = scanner
+      @results = results
+    end
+
+    def valid?
+      @results.all?(&:valid?)
+    end
+
+    def inspect
+      "#<DependabotValidator::ResultCollection:#{object_id} @scanner=#{@scanner}, @results=[\n\t#{@results.join("\n\t")}\n]>"
+    end
+
+    def print_missing_configs
+      @results.filter do |result|
+        !result.valid?
+      end.map(&:print_config)
+    end
+  end
+
+  class Result
+    def initialize(directory:, match:)
+      @directory = directory
+      @match = match
+    end
+
+    def valid?
+      @match
+    end
+
+    def to_s
+      inspect
+    end
+
+    def print_config
+      <<~TEMPLATE
+        - package-ecosystem: bundler
+          directory: #{@directory}
+          schedule:
+            interval: daily
+          open-pull-request-limit: 5
+      TEMPLATE
+    end
+  end
+
+  class ConfigMatcher
+    attr_reader :generated_config, :existing_config
+
+    def initialize(generated_config:, existing_config:)
+      @generated_config = generated_config
+      @existing_config = existing_config
+      @results = []
+    end
+
+    def generate!
+      generated_config.map do |generated|
+        directory = generated.fetch('directory')
+        match = existing_config.any? do |existing|
+          ap existing if DEBUG
+          generated.fetch('directory') == existing.fetch('directory')
+        end
+
+        Result.new(directory: directory, match: match)
+      end
     end
   end
 end
@@ -102,32 +158,19 @@ class GemfileScanner
     def initialize(path:)
       @path = path
     end
-
-    def print_config(directory:)
-      <<~TEMPLATE
-        - package-ecosystem: bundler
-          directory: #{directory}
-          schedule:
-            interval: daily
-          open-pull-request-limit: 5
-      TEMPLATE
-    end
   end
 end
 
 validator = DependabotValidator.new(directory: PROJECT_PATH, dependabot: DEPENDABOT_CONFIG_PATH)
 results = validator.scan
 
-ap results
-if DependabotValidator.valid?(results)
+ap results if DEBUG
+if results.all?(&:valid?)
   puts "DependabotValidator.valid? => true"
 else
-  results.map do |scanner|
-    scanner.map do |_, group|
-      group.map do |path, _|
-        ap path
-      end
-    end
+  warn "Add the following yaml to your .github/dependabot.yml configuration file:"
+  results.each do |scanner|
+    warn scanner.print_missing_configs
   end
   raise "Dependabot configuration needs updating"
 end
