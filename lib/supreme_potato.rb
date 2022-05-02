@@ -52,9 +52,10 @@ class DependabotValidator
   end
 
   class Result
-    def initialize(directory:, match:)
+    def initialize(directory:, match:, package_ecosystem:)
       @directory = directory
       @match = match
+      @package_ecosystem = package_ecosystem
     end
 
     def valid?
@@ -67,7 +68,7 @@ class DependabotValidator
 
     def print_config
       <<~TEMPLATE
-        - package-ecosystem: bundler
+        - package-ecosystem: #{@package_ecosystem}
           directory: #{@directory}
           schedule:
             interval: daily
@@ -90,10 +91,10 @@ class DependabotValidator
         directory = generated.fetch('directory')
         match = existing_config.any? do |existing|
           ap existing if DEBUG
-          generated.fetch('directory') == existing.fetch('directory')
+          directory == existing.fetch('directory')
         end
 
-        Result.new(directory: directory, match: match)
+        Result.new(directory: directory, match: match, package_ecosystem: generated.fetch('package-ecosystem'))
       end
     end
   end
