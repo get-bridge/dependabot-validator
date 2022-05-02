@@ -3,11 +3,10 @@ require_relative 'supreme_potato/gemfile_scanner'
 class DependabotValidator
   attr_reader :directory, :dependabot
 
-  def self.scanners
-    [
-      GemfileScanner
-    ]
-  end
+  SCANNERS = [
+    GemfileScanner,
+    PackageJSONScanner
+  ]
 
   def self.valid?(results)
     results.all?(&:valid?)
@@ -19,7 +18,8 @@ class DependabotValidator
   end
 
   def scan
-    self.class.scanners.map do |scanner|
+    SCANNERS.map do |scanner_class|
+      scanner = scanner_class.new
       generated_config = scanner.generate(directory: directory)
       ap generated_config if DEBUG
       existing_config = scanner.parse(dependabot: dependabot)
