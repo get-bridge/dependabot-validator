@@ -16,4 +16,4 @@ jobs:
       - uses: ./
         with:
           directory: spec/fixtures/test_app
-          dependabot_config: spec/fixtures/dependabot.yml
+          dependabot_config: spec/fixtures/test_app/.github/dependabot.yml
