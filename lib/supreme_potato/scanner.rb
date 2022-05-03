@@ -1,18 +1,18 @@
 module Scanner
   def generate(directory: '.')
-    sourcefiles = Dir.glob(File.join(directory, '**', @filename))
+    sourcefiles = Dir.glob(File.join(directory, '**', filename))
     # TODO: figure out how to do yaml without anchors/aliases
     directories(sourcefiles: sourcefiles).map do |d|
-      { 'directory' => d }.merge(@default_entry)
+      { 'directory' => d }.merge(default_entry)
     end
   end
 
   def parse(dependabot: '.github/dependabot.yml')
     File.open(dependabot) do |file|
       dependabot_config = YAML.safe_load(file.read)
-      puts "Running package manager search: #{@package_ecosystem}"
+      puts "Running package manager search: #{package_ecosystem}"
       dependabot_config.fetch('updates').select do |entry|
-        entry.fetch('package-ecosystem') == @package_ecosystem
+        entry.fetch('package-ecosystem') == package_ecosystem
       end
     end
   end
@@ -24,4 +24,6 @@ module Scanner
       File.dirname(sourcefile)
     end
   end
+
+  attr_reader :package_ecosystem, :filename, :default_entry
 end
