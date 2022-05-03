@@ -4,7 +4,7 @@ This is a testbed for an in-development Dependebot GitHub Action.
 
 ## example
 
-    ./main.rb
+    ./main.rb spec/fixtures/test_app spec/fixtures/test_app/.github/dependabot.yml
 
 ## GitHub Action
 
