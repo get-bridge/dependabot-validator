@@ -1,4 +1,5 @@
 require_relative 'supreme_potato/gemfile_scanner'
+require_relative 'supreme_potato/package_json_scanner'
 
 class DependabotValidator
   attr_reader :directory, :dependabot

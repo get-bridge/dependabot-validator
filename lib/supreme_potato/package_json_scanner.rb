@@ -1,11 +1,11 @@
 require_relative 'scanner'
 
-class GemfileScanner
+class PackageJSONScanner
   include Scanner
 
-  FILENAME = 'Gemfile'.freeze
+  FILENAME = 'package.json'.freeze
   DEFAULT_ENTRY = {
-    'package-ecosystem' => 'bundler',
+    'package-ecosystem' => 'npm',
     'schedule' => {
       'interval' => 'weekly'
     },
@@ -13,7 +13,7 @@ class GemfileScanner
   }.freeze
 
   def initialize
-    @package_ecosystem = 'bundler'
+    @package_ecosystem = 'npm'
     @filename = FILENAME
     @default_entry = DEFAULT_ENTRY
   end
