@@ -1,11 +1,11 @@
 require_relative 'scanner'
 
-class GemfileScanner
+class GithubActionsScanner
   include Scanner
 
-  FILENAME = 'Gemfile'.freeze
+  FILENAME = '.github/workflows/*.y?ml'.freeze
   DEFAULT_ENTRY = {
-    'package-ecosystem' => 'bundler',
+    'package-ecosystem' => 'github-actions',
     'schedule' => {
       'interval' => 'daily'
     },

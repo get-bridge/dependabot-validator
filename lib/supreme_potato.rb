@@ -1,4 +1,5 @@
 require_relative 'supreme_potato/gemfile_scanner'
+require_relative 'supreme_potato/github_actions_scanner'
 require_relative 'supreme_potato/package_json_scanner'
 
 require_relative 'supreme_potato/config_matcher'
@@ -9,8 +10,9 @@ class DependabotValidator
 
   SCANNERS = [
     GemfileScanner,
+    GithubActionsScanner,
     PackageJSONScanner
-  ]
+  ].freeze
 
   def self.valid?(results)
     results.all?(&:valid?)

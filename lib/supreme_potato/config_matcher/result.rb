@@ -7,7 +7,7 @@ class ConfigMatcher
     end
 
     def valid?
-      @match
+      match
     end
 
     def to_s
@@ -16,12 +16,16 @@ class ConfigMatcher
 
     def print_config
       <<~TEMPLATE
-        - package-ecosystem: #{@package_ecosystem}
-          directory: #{@directory}
+        - package-ecosystem: #{package_ecosystem}
+          directory: #{directory}
           schedule:
             interval: daily
           open-pull-request-limit: 5
       TEMPLATE
     end
+
+    private
+
+    attr_reader :directory, :match, :package_ecosystem
   end
 end

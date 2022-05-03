@@ -15,6 +15,6 @@ class ResultCollection
   def print_missing_configs
     @results.filter do |result|
       !result.valid?
-    end.map(&:print_config)
+    end.map(&:print_config).uniq
   end
 end
