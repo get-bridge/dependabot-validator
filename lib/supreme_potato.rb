@@ -1,6 +1,9 @@
 require_relative 'supreme_potato/gemfile_scanner'
 require_relative 'supreme_potato/package_json_scanner'
 
+require_relative 'supreme_potato/config_matcher'
+require_relative 'supreme_potato/results_collection'
+
 class DependabotValidator
   attr_reader :directory, :dependabot
 
@@ -28,75 +31,6 @@ class DependabotValidator
 
       config_matcher = ConfigMatcher.new(generated_config: generated_config, existing_config: existing_config)
       ResultCollection.new(scanner: scanner, results: config_matcher.generate!)
-    end
-  end
-
-  class ResultCollection
-    def initialize(scanner:, results:)
-      @scanner = scanner
-      @results = results
-    end
-
-    def valid?
-      @results.all?(&:valid?)
-    end
-
-    def inspect
-      "#<DependabotValidator::ResultCollection:#{object_id} @scanner=#{@scanner}, @results=[\n\t#{@results.join("\n\t")}\n]>"
-    end
-
-    def print_missing_configs
-      @results.filter do |result|
-        !result.valid?
-      end.map(&:print_config)
-    end
-  end
-
-  class Result
-    def initialize(directory:, match:, package_ecosystem:)
-      @directory = directory
-      @match = match
-      @package_ecosystem = package_ecosystem
-    end
-
-    def valid?
-      @match
-    end
-
-    def to_s
-      inspect
-    end
-
-    def print_config
-      <<~TEMPLATE
-        - package-ecosystem: #{@package_ecosystem}
-          directory: #{@directory}
-          schedule:
-            interval: daily
-          open-pull-request-limit: 5
-      TEMPLATE
-    end
-  end
-
-  class ConfigMatcher
-    attr_reader :generated_config, :existing_config
-
-    def initialize(generated_config:, existing_config:)
-      @generated_config = generated_config
-      @existing_config = existing_config
-      @results = []
-    end
-
-    def generate!
-      generated_config.map do |generated|
-        directory = generated.fetch('directory')
-        match = existing_config.any? do |existing|
-          ap existing if DEBUG
-          directory == existing.fetch('directory')
-        end
-
-        Result.new(directory: directory, match: match, package_ecosystem: generated.fetch('package-ecosystem'))
-      end
     end
   end
 end
