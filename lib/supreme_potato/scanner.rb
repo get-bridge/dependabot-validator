@@ -10,7 +10,7 @@ module Scanner
   def parse(dependabot: '.github/dependabot.yml')
     File.open(dependabot) do |file|
       dependabot_config = YAML.safe_load(file.read)
-      puts "Running package manager search: #{package_ecosystem}"
+      warn "Running package manager search: #{package_ecosystem}" if DEBUG
       dependabot_config.fetch('updates').select do |entry|
         entry.fetch('package-ecosystem') == package_ecosystem
       end

@@ -6,9 +6,9 @@ require 'awesome_print'
 require_relative 'lib/supreme_potato'
 
 DEBUG = false
-DEBUG_ARGS = DEBUG || true
+DEBUG_ARGS = true
 
-puts "\nargs: [#{ARGV.join(', ')}]\n\n" if DEBUG_ARGS
+warn "\nargs: [#{ARGV.join(', ')}]\n\n" if DEBUG_ARGS
 
 PROJECT_PATH = ARGV.shift
 DEPENDABOT_CONFIG_PATH = ARGV.shift
