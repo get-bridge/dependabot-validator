@@ -3,7 +3,7 @@
 require 'yaml'
 require 'awesome_print'
 
-require_relative 'lib/supreme_potato'
+require_relative 'lib/dependabot_validator'
 
 DEBUG = false
 DEBUG_ARGS = true

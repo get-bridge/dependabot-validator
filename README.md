@@ -1,8 +1,6 @@
-# supreme-potato
+# Dependabot Validator
 
-This is a testbed for an in-development Dependebot GitHub Action.
-
-## example
+## Local Execution
 
     ./main.rb spec/fixtures/test_app spec/fixtures/test_app/.github/dependabot.yml
 
@@ -15,7 +13,7 @@ Add the following to your workflow (e.g. `.github/actions/test.yml`):
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v3.0.1
-          - uses: get-bridge/supreme-potato@main
+          - uses: get-bridge/dependabot-validator@main
 
 ## Testing the GitHub Action
 

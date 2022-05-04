@@ -1,10 +1,10 @@
-require_relative 'supreme_potato/build_gradle_scanner'
-require_relative 'supreme_potato/gemfile_scanner'
-require_relative 'supreme_potato/github_actions_scanner'
-require_relative 'supreme_potato/package_json_scanner'
+require_relative 'dependabot_validator/build_gradle_scanner'
+require_relative 'dependabot_validator/gemfile_scanner'
+require_relative 'dependabot_validator/github_actions_scanner'
+require_relative 'dependabot_validator/package_json_scanner'
 
-require_relative 'supreme_potato/config_matcher'
-require_relative 'supreme_potato/results_collection'
+require_relative 'dependabot_validator/config_matcher'
+require_relative 'dependabot_validator/results_collection'
 
 class DependabotValidator
   attr_reader :directory, :dependabot
