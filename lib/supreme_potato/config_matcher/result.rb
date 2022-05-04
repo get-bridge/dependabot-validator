@@ -21,6 +21,7 @@ class ConfigMatcher
           schedule:
             interval: daily
           open-pull-request-limit: 5
+
       TEMPLATE
     end
 
