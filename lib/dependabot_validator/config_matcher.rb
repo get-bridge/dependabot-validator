@@ -13,12 +13,7 @@ class ConfigMatcher
       directory = generated.fetch('directory')
       match = existing_config.any? do |existing|
         ap existing if DEBUG
-        if directory == existing.fetch('directory')
-          ap [directory, existing.fetch('directory'), generated.fetch('package-ecosystem')]
-          true
-        else
-          false
-        end
+        directory == existing.fetch('directory')
       end
 
       Result.new(directory: directory, match: match, package_ecosystem: generated.fetch('package-ecosystem'))

@@ -16,10 +16,6 @@ class DependabotValidator
     PackageJSONScanner
   ].freeze
 
-  def self.valid?(results)
-    results.all?(&:valid?)
-  end
-
   def initialize(directory:, dependabot:)
     @directory = directory
     @dependabot = dependabot
