@@ -21,7 +21,12 @@ module Scanner
 
   def directories(sourcefiles:)
     sourcefiles.map do |sourcefile|
-      File.dirname(sourcefile)
+      # absolute_path here is used to match how dependabot expects all
+      # paths to have a leading '/'.
+      # e.g.:
+      #     '.' -> '/'
+      #     './gems/foo' -> '/gems/foo'
+      File.absolute_path(File.dirname(sourcefile), '/')
     end
   end
 

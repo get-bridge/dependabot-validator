@@ -7,40 +7,40 @@ updates:
     open-pull-requests-limit: 5
 
   - package-ecosystem: bundler
-    directory: spec/fixtures/test_app
+    directory: /spec/fixtures/test_app
     schedule:
       interval: weekly
     # Disable version update pull requests for now
     open-pull-requests-limit: 5
 
   - package-ecosystem: bundler
-    directory: spec/fixtures/test_app/vendor/some_lib
+    directory: /spec/fixtures/test_app/vendor/some_lib
     schedule:
       interval: weekly
     # Disable version update pull requests for now
     open-pull-requests-limit: 5
 
   - package-ecosystem: bundler
-    directory: spec/fixtures/test_app/lib/some-lib
+    directory: /spec/fixtures/test_app/lib/some-lib
     schedule:
       interval: daily
     open-pull-request-limit: 5
 
   - package-ecosystem: npm
-    directory: spec/fixtures/test_app
+    directory: /spec/fixtures/test_app
     schedule:
       interval: weekly
     # Disable version update pull requests for now
     open-pull-requests-limit: 5
 
   - package-ecosystem: gradle
-    directory: spec/fixtures/test_app
+    directory: /spec/fixtures/test_app
     schedule:
       interval: daily
     open-pull-request-limit: 5
 
   - package-ecosystem: github-actions
-    directory: spec/fixtures/test_app/.github/workflows
+    directory: /spec/fixtures/test_app/.github/workflows
     schedule:
       interval: daily
     open-pull-request-limit: 5
