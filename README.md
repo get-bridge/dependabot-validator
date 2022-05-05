@@ -15,7 +15,7 @@ Add the following to your workflow (e.g. `.github/actions/test.yml`):
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v3.0.2
-          - uses: get-bridge/dependabot-validator@v1.0.2
+          - uses: get-bridge/dependabot-validator@v1.0.3
 
 ## Testing the GitHub Action
 
