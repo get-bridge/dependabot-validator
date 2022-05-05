@@ -19,7 +19,7 @@ class ConfigMatcher
         - package-ecosystem: #{package_ecosystem}
           directory: #{directory}
           schedule:
-            interval: daily
+            interval: weekly
           open-pull-request-limit: 5
 
       TEMPLATE
