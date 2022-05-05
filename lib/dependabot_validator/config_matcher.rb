@@ -16,6 +16,9 @@ class ConfigMatcher
         directory == existing.fetch('directory')
       end
 
+      existing_config.each do |existing|
+        ap({ result: match ? "MATCHING" : "nah", generated: directory, existing: existing.fetch('directory') })
+      end
       Result.new(directory: directory, match: match, package_ecosystem: generated.fetch('package-ecosystem'))
     end
   end

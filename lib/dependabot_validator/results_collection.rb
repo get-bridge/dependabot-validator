@@ -13,7 +13,6 @@ class ResultCollection
   end
 
   def print_missing_configs
-    ap self
     results.filter do |result|
       !result.valid?
     end.map(&:print_config).uniq
