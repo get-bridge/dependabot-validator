@@ -33,8 +33,8 @@ class DependabotValidator
       existing_config = scanner.parse(dependabot: dependabot)
       ap existing_config if DEBUG
 
-      config_matcher = ConfigMatcher.new(generated_config: generated_config, existing_config: existing_config)
-      ResultCollection.new(scanner: scanner, results: config_matcher.generate!)
+      results = ConfigMatcher.new(generated_config: generated_config, existing_config: existing_config).generate!
+      ResultCollection.new(scanner: scanner, results: results)
     end
   end
 end

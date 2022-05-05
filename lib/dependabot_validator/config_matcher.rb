@@ -6,7 +6,6 @@ class ConfigMatcher
   def initialize(generated_config:, existing_config:)
     @generated_config = generated_config
     @existing_config = existing_config
-    @results = []
   end
 
   def generate!
@@ -14,7 +13,12 @@ class ConfigMatcher
       directory = generated.fetch('directory')
       match = existing_config.any? do |existing|
         ap existing if DEBUG
-        directory == existing.fetch('directory')
+        if directory == existing.fetch('directory')
+          ap [directory, existing.fetch('directory'), generated.fetch('package-ecosystem')]
+          true
+        else
+          false
+        end
       end
 
       Result.new(directory: directory, match: match, package_ecosystem: generated.fetch('package-ecosystem'))
