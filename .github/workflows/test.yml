@@ -1,11 +1,16 @@
 name: Test
 
 on:
+  pull_request_target:
+    types: [labeled]
   push:
     branches-ignore:
       - "dependabot/**"
-  pull_request_target:
-    types: [labeled]
+    tags-ignore:
+      - '*'
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
 
 jobs:
   test:
