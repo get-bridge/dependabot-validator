@@ -20,7 +20,7 @@ class ConfigMatcher
           directory: #{directory}
           schedule:
             interval: weekly
-          open-pull-request-limit: 5
+          open-pull-requests-limit: 5
 
       TEMPLATE
     end
