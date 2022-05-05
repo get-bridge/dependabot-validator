@@ -9,10 +9,11 @@ class ResultCollection
   end
 
   def inspect
-    "#<DependabotValidator::ResultCollection:#{object_id} scanner=#{scanner}, results=[\n\t#{results.join("\n\t")}\n]>"
+    "#<ResultCollection:#{object_id} scanner=#{scanner.inspect}, results=[\n\t#{results.join("\n\t")}\n]>"
   end
 
   def print_missing_configs
+    ap self
     results.filter do |result|
       !result.valid?
     end.map(&:print_config).uniq

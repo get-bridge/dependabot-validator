@@ -10,10 +10,10 @@ class DependabotValidator
   attr_reader :directory, :dependabot
 
   SCANNERS = [
-    BuildGradleScanner,
+    # BuildGradleScanner,
     GemfileScanner,
-    GithubActionsScanner,
-    PackageJSONScanner
+    # GithubActionsScanner,
+    # PackageJSONScanner
   ].freeze
 
   def initialize(directory:, dependabot:)
