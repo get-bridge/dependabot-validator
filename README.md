@@ -1,5 +1,7 @@
 # Dependabot Validator
 
+[![Test](https://github.com/get-bridge/dependabot-validator/actions/workflows/test.yml/badge.svg)](https://github.com/get-bridge/dependabot-validator/actions/workflows/test.yml)
+
 ## Local Execution
 
     ./main.rb spec/fixtures/test_app spec/fixtures/test_app/.github/dependabot.yml
